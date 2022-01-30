@@ -3,7 +3,7 @@
     <div class="columns is-multiline">
       <div class="column is-9">
         <figure class="image mb-6">
-          <img v-bind:src="product.get_image" />
+          <img class="product_img" :src="product.get_image" />
         </figure>
 
         <h1 class="title">{{ product.name }}</h1>
@@ -22,7 +22,7 @@
           </div>
 
           <div class="control">
-            <a class="button is-dark">Add to cart</a>
+            <a class="button is-dark" @click="addToCart">Add to cart</a>
           </div>
         </div>
       </div>
@@ -32,6 +32,7 @@
 
 <script>
 import axios from "axios";
+import { toast } from "bulma-toast";
 export default {
   name: "Product",
   data() {
@@ -44,10 +45,10 @@ export default {
     this.getProduct();
   },
   methods: {
-    async getProduct() {
+    getProduct() {
       const category_slug = this.$route.params.category_slug;
       const product_slug = this.$route.params.product_slug;
-      await axios
+      axios
         .get(`/api/v1/products/${category_slug}/${product_slug}`)
         .then((response) => {
           this.product = response.data;
@@ -56,6 +57,31 @@ export default {
           console.log(error);
         });
     },
+    addToCart() {
+      if (isNaN(this.quantity) || this.quantity < 1) {
+        this.quantity = 1;
+      }
+      const item = {
+        product: this.product,
+        quantity: this.quantity,
+      };
+      this.$store.commit("addToCart", item);
+
+      toast({
+        message: "This product was added to the cart",
+        type: "is-success",
+        dismissible: true,
+        pauseOnHover: true,
+        duration: 2000,
+        position: "bottom-right",
+      });
+    },
   },
 };
 </script>
+
+<style scoped>
+.product_img {
+  width: 350px;
+}
+</style>
