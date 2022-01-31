@@ -5,7 +5,7 @@ export default createStore({
     cart: {
       items: [],
     },
-    isAuthentication: false,
+    isAuthenticated: false,
     token: "",
     isLoading: false,
   },
@@ -27,7 +27,11 @@ export default createStore({
       } else {
         state.cart.items.push(item);
       }
+
       localStorage.setItem("cart", JSON.stringify(state.cart));
+    },
+    setLoading(state, tatus) {
+      state.isLoading = state;
     },
   },
   actions: {},

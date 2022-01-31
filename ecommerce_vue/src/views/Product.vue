@@ -22,7 +22,7 @@
           </div>
 
           <div class="control">
-            <a class="button is-dark" @click="addToCart">Add to cart</a>
+            <a @click="addToCart" class="button is-dark">Add to cart</a>
           </div>
         </div>
       </div>
@@ -45,17 +45,20 @@ export default {
     this.getProduct();
   },
   methods: {
-    getProduct() {
+    async getProduct() {
+      this.$store.commit("setLoading", true);
       const category_slug = this.$route.params.category_slug;
       const product_slug = this.$route.params.product_slug;
-      axios
+      await axios
         .get(`/api/v1/products/${category_slug}/${product_slug}`)
         .then((response) => {
           this.product = response.data;
+          document.title = this.product.name + " | Ecommerce";
         })
         .catch((error) => {
           console.log(error);
         });
+      this.$store.commit("setLoading", false);
     },
     addToCart() {
       if (isNaN(this.quantity) || this.quantity < 1) {
@@ -66,7 +69,6 @@ export default {
         quantity: this.quantity,
       };
       this.$store.commit("addToCart", item);
-
       toast({
         message: "This product was added to the cart",
         type: "is-success",

@@ -13,12 +13,12 @@ class Category(models.Model):
 
      class Meta:
           ordering = ('name',)
-          
+     
      def __str__(self):
-         return self.name
-
+          return self.name
+     
      def get_absolute_url(self):
-          return f'/{self.slug}'
+          return f'/{self.slug}/'
 
 # Create Product
 class Product(models.Model):
